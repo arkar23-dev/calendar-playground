@@ -4,24 +4,22 @@ const { google } = require('googleapis');
 const { createBullBoard } = require('@bull-board/api');
 const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
-const { Queue: QueueMQ, Worker } = require('bullmq');
-
+const {createQueueMQ} =require('./queue');
 const app = express();
 const PORT = 3000;
 
-//queue setup
-const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
+// queue
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/queue');
+app.use('/queue', serverAdapter.getRouter());
 
+// queue channels
+const calenderEvents = createQueueMQ('calenderEvents');
 
-const syncQueue = new Bull('sync-events-queue', {
-    redis: {
-      host: '127.0.0.1', // Update if needed
-      port: 6379,
-    },
+createBullBoard({
+    queues: [new BullMQAdapter(calenderEvents)],
+    serverAdapter,
   });
-
-
-
 
 // OAuth2 setup
 const oauth2Client = new google.auth.OAuth2(
