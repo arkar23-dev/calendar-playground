@@ -1,23 +1,36 @@
-const { Queue:QueueMQ, Worker} =  require('bullmq');
+const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
+const { ExpressAdapter } = require('@bull-board/express');
+const { createBullBoard } = require('@bull-board/api');
+const { Queue: QueueMQ } = require('bullmq');
+const channels = require('./channels')
+
 
 // TODO: move to config
 const redisOptions = {
-  port: 6379,
-  host: 'localhost',
-  password: '',
-  tls: false,
-};
+    port: 6379,
+    host: 'localhost',
+    password: '',
+    tls: false,
+  };
 
- const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
+const createQueueMQ = (name) => new QueueMQ(name, { connection: redisOptions });
 
- const  setupBullMQProcessor=(queueName)=> {
-    new Worker(
-      queueName,
-      async (job) => {
-        return { jobId: `This is the return value of job (${job.id})` };
-      },
-      { connection: redisOptions }
-    );
-  }
+// queue
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/queue');
 
-  module.exports ={createQueueMQ,setupBullMQProcessor}
+
+const setupQueue = () => {
+    channels.forEach(channel => {
+        // bull ui board
+        createBullBoard({
+            queues: [new BullMQAdapter(createQueueMQ(channel.name))],
+            serverAdapter,
+        });
+
+        channel.process(channel.name)
+    });
+
+}
+
+module.exports = { setupQueue, serverAdapter};

@@ -1,6 +1,8 @@
 const express = require('express');
-const router =express.Router();
+const router = express.Router();
 const { google } = require('googleapis');
+const {calenderQueue} = require('../queue/syncCalendar')
+
 
 // OAuth2 setup
 const oauth2Client = new google.auth.OAuth2(
@@ -30,6 +32,8 @@ router.get('/auth', (req, res) => {
   router.get('/sync', async (req, res) => {
     const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
+     await calenderQueue.add('my-job', { data: 'example data' });
+
     // Example event data; replace with your database retrieval
     const event = {
       summary: 'Sample Event',
@@ -48,5 +52,11 @@ router.get('/auth', (req, res) => {
       res.status(500).send('Error creating event');
     }
   });
+
+  router.get('/add-queue', async (req, res) => {
+    const job =await calenderQueue.add('my-job', { data: 'example data' });
+
+    return res.send(`success ${job.id}`);
+  })
 
   module.exports = router;
