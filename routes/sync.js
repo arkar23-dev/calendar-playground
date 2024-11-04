@@ -25,7 +25,11 @@ router.get('/auth', (req, res) => {
     const { code } = req.query;
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
-    res.send('Authorization successful');
+
+    res.json({
+        success: true,
+        tokens
+    });
   });
 
   // Sync events from database

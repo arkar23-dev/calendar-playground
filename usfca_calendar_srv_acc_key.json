@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "usfca-calendar",
+  "private_key_id": "8dfcb1f2cd965cf31253fdb70a499be8a6de706e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC6satztB5nRGD4\nT7CnUYg/JWanh/eFo5SzyK0SnjDT2ar30jf8Iv79KNhru8vChb5OUkFjuaZ9bg84\nRzpI1R/d208aMJdHhL2exu27uoxZCT8yyFecPJtLpHCIH0+8POtbXbuITHSd/37L\n7S4CZ8pFPlOQbmiz2Zj39o06FwkiVLLy01fUHNIT6w63M5MQ2vZZNjEb4Kjdh7qX\nyI/n6iURSI25awM6YMk7J6Q50OVr2QhP9WOpVmRIqcXWmuwGsEtznAEvYkX1mUU/\nycaQMFSlt4tPh/0qXohuJyOPRoNResIdDin60+LYkFp7e9KvPQuGUkaNMkZdbgUJ\nFcfToSsxAgMBAAECggEAHXl+5tO9SBL210Unj+byonuKZzEzbiUbDT5Fus6ASXYQ\nRLNq9NLmnHvWHT4nJ3UbjDx2x+KPyzY0z28JX+XL8+gTp0AcJiWqFTb1YgHL9iOc\nV21jTY6Q+wKBZLBC06Zvhvt3p8dgUvB7KYFu1eDigYebRE52F8znFmDVv6HS5pkh\nIXODlcVEBlrEKsuVUsdJR8+cUR3Lc1gRbUlx5Kz20RRDjBQDyJTz4UtztLkmBYvY\nn/XfICQEZLuwN2V7X1BYgojjF9psyxDamxFlsZ2lBzrSAb0DxXnHUjZGeF3+3pqh\nVdWvddOv19+T4udFSejyJGlaq86wHeo9r2RHCX7CtQKBgQDgApkMrHui4py9pLsB\nsplOJEDidjVCk/jVtqPaj0GciUxUIAgbSTjJw847LBQdYMF3F4vaWpDd17v/+Rc+\nPxGLl/s43mN7ORVnZ+7X4nJh6L4ANkSioQOjMssRes2879bSOBhnuO25xVe84biC\nLSQNDyhiBP/yNqQsVTZ1d7gMtQKBgQDVWtzJRTy5Z66JvgnkxVwymWa/FopDGDDs\nVJY9NU4xrE+QxouXco6/GYs6f0OKCoOOVJAIa3ZxRjc9UvdcItBhVXRRXOoRG/dj\npN/E5SsQNxyPVZVva0k45bzCFEMnK3+hLahp+80Xr6R45XBZfcSlofLura8vbPEi\naYLQGQAuDQKBgQCfvJqAtBoxy6Bzhx0nF8FEPIvcMOjHwhal5uguuQrTYgCA2JqP\nQoZxMeREw6jQTieHEc5TdVNqLiVMYcZWR8juHwEwyzxrKQh/RVjGrx5bfQjHw+rr\ngR/D5ztxCn3dJbWtD/0vMWqrlvJ6qQbWJPRZL57fTqtof9hQGK+N0kH3JQKBgHXK\nQlbEaPAbc9sMFj49T9eHpZgeA5tjQa9YS9HjGhaGgS72zp6AWpraqWlUVZ9iipsL\nyLE9UxjaoSi0I2i0t8LlAODioT9s5zoWDoyP0SSUqKnhoCzxWG2XOI0VzrVTaJU9\ntds9b0+CYxVz5oEh1G11ab+oGC3gwYg0JEprYxQJAoGBAMFNhCRuYKlYFgwbjgjU\nTnXiAcfiOiIzOdaFnEqnzoNSFdfBj+zsAgFzVjTgpSRrzyl/XngpdU0FUTW1zbOD\nBWHr5iK4I74z/UHa92Q8RY5FH1D1Spw27G1MOYATMizdYSIvtUFcRvVCr32RFF57\nYDiarLaCCo4pWdklFDaxd/WC\n-----END PRIVATE KEY-----\n",
+  "client_email": "usfc-test-mobile@usfca-calendar.iam.gserviceaccount.com",
+  "client_id": "105665368821812980102",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/usfc-test-mobile%40usfca-calendar.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
