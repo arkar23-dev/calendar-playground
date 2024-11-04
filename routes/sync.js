@@ -57,6 +57,6 @@ router.get('/auth', (req, res) => {
     const job =await calenderQueue.add('my-job', { data: 'example data' });
 
     return res.send(`success ${job.id}`);
-  })
+  });
 
   module.exports = router;
