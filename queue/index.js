@@ -2,6 +2,7 @@ const { BullMQAdapter } = require('@bull-board/api/bullMQAdapter');
 const { ExpressAdapter } = require('@bull-board/express');
 const { createBullBoard } = require('@bull-board/api');
 const { Queue: QueueMQ } = require('bullmq');
+const { scheduleJob } =require('./syncCalendar')
 const channels = require('./channels')
 
 
@@ -20,7 +21,7 @@ const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath('/queue');
 
 
-const setupQueue = () => {
+const setupQueue =async () => {
     channels.forEach(channel => {
         // bull ui board
         createBullBoard({
@@ -30,6 +31,8 @@ const setupQueue = () => {
 
         channel.process(channel.name)
     });
+
+    await scheduleJob();
 
 }
 

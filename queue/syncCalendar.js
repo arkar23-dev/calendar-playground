@@ -24,5 +24,29 @@ const process = (queueName) => {
 }
 
 const calenderQueue = new Queue('calenderEvents');
+const scheduleJob =async ()=>{
 
-module.exports = { process, calenderQueue }
+// Upserting a job with a cron expression
+await calenderQueue.upsertJobScheduler(
+    'schedular-job',
+    {
+        every: 10000, // Job will repeat every 10000 milliseconds (10 seconds)
+      },
+    {
+      name: 'cron-job',
+      data: { jobData: 'morning data' },
+      opts: {}, // Optional additional job options
+    },
+  );
+
+  const worker = new Worker(
+    'schedular-job',
+    async job => {
+      console.log(`Processing job ${job.id} with data: ${job.data.jobData}`);
+    },
+    { connection : redisOptions},
+  );
+
+}
+
+module.exports = { process, calenderQueue,scheduleJob }
