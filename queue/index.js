@@ -28,7 +28,6 @@ const setupQueue =async () => {
             queues: [new BullMQAdapter(createQueueMQ(channel.name))],
             serverAdapter,
         });
-
         channel.process(channel.name)
     });
 

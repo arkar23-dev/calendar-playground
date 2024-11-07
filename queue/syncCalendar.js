@@ -1,4 +1,6 @@
 const { Queue, Worker } = require('bullmq');
+const { oAuth2Client } = require('../google-calendar/index');
+const { google } = require('googleapis');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -10,14 +12,59 @@ const redisOptions = {
     tls: false,
 };
 
+
+
 const process = (queueName) => {
     return new Worker(
         queueName,
         async (job) => {
 
-            await sleep(5000);
+            try {
+                const { event, users } = job.data;
+                const calendar = google.calendar({ version: 'v3' });
 
-            return { jobId: `This is the return value of job (${job.id})` };
+                // Loop over the chunk of users and add their events to the batch
+                users.forEach(user => {
+                    job.log(`Processing event: ${event.summary}`);
+
+                    job.log(`Processing user: ${user.email}`);
+
+                    try {
+                        oAuth2Client.setCredentials({
+                            access_token: user.accessToken,
+                            refresh_token: user.refreshToken,
+                        });
+
+                        calendar.events.insert({
+                            auth: oAuth2Client,
+                            calendarId: user.email,
+                            requestBody: {
+                                summary: event.summary,
+                                location: event.location,
+                                description: event.description,
+                                start: {
+                                    dateTime: event.startDateTime,
+                                    timeZone: event.timeZone,
+                                },
+                                end: {
+                                    dateTime: event.endDateTime,
+                                    timeZone: event.timeZone,
+                                },
+                            },
+                        });
+                        job.log(`Event successfully added for user: ${user.email}`);
+                    } catch (error) {
+                        job.log(`Error Adding Event: ${user.email}`);
+                        throw  error;
+                    }
+                });
+                return { success: true };
+
+            } catch (err) {
+                console.error('Error executing batch request', err);
+            }
+
+
         },
         { connection: redisOptions }
     );
@@ -25,20 +72,20 @@ const process = (queueName) => {
 
 const calenderQueue = new Queue('calenderEvents');
 
-const scheduleJob =async ()=>{
+const scheduleJob = async () => {
 
-// Upserting a job with a cron expression
-await calenderQueue.upsertJobScheduler(
-    'schedular-job',
-    {
-        every: 10000, // Job will repeat every 10000 milliseconds (10 seconds)
-      },
-    {
-      name: 'cron-job',
-      data: { jobData: 'morning data' },
-      opts: {}, // Optional additional job options
-    },
-  );
+    // Upserting a job with a cron expression
+    await calenderQueue.upsertJobScheduler(
+        'schedular-job',
+        {
+            every: 10000, // Job will repeat every 10000 milliseconds (10 seconds)
+        },
+        {
+            name: 'cron-job',
+            data: { jobData: 'morning data' },
+            opts: {}, // Optional additional job options
+        },
+    );
 }
 
-module.exports = { process, calenderQueue,scheduleJob }
+module.exports = { process, calenderQueue, scheduleJob }
