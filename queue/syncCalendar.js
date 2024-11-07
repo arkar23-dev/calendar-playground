@@ -18,43 +18,46 @@ const process = (queueName) => {
         async (job) => {
             try {
                 const { events, user } = job.data;
-                const calendar = google.calendar({ version: 'v3' });
+                // const calendar = google.calendar({ version: 'v3' });
+
 
                 // Loop over the chunk of events
-                events.forEach(event => {
+                for(let event of events) {
                     job.log(`Processing event: ${event.summary}`);
                     job.log(`Processing user: ${user.email}`);
 
                     try {
-                        oAuth2Client.setCredentials({
-                            access_token: user.accessToken,
-                            refresh_token: user.refreshToken,
-                        });
+                        // oAuth2Client.setCredentials({
+                        //     access_token: user.accessToken,
+                        //     refresh_token: user.refreshToken,
+                        // });
 
-
-                         calendar.events.insert({
-                            auth: oAuth2Client,
-                            calendarId: 'primary',
-                            requestBody: {
-                                summary: event.summary,
-                                location: event.location,
-                                description: event.description,
-                                start: {
-                                    dateTime: event.startDateTime,
-                                    timeZone: event.timeZone,
-                                },
-                                end: {
-                                    dateTime: event.endDateTime,
-                                    timeZone: event.timeZone,
-                                },
-                            },
-                        });
+                        //   await calendar.events.insert({
+                        //     auth: oAuth2Client,
+                        //     calendarId: 'primary',
+                        //     requestBody: {
+                        //         summary: event.summary,
+                        //         location: event.location,
+                        //         description: event.description,
+                        //         start: {
+                        //             dateTime: event.startDateTime,
+                        //             timeZone: event.timeZone,
+                        //         },
+                        //         end: {
+                        //             dateTime: event.endDateTime,
+                        //             timeZone: event.timeZone,
+                        //         },
+                        //     },
+                        // });
                         job.log(`Event successfully added for user: ${user.email}`);
                     } catch (error) {
-                        job.log(`Error Adding Event: ${event.summary}`);
-                        throw  error;
+                        job.log(`Event failed to added for user: ${user.email}`);
+                        throw error;
                     }
-                });
+
+
+                }
+
                 return { success: true };
 
             } catch (err) {

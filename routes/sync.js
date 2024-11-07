@@ -86,7 +86,7 @@ router.get('/create-event', async (req, res) => {
 // create batch events
 router.get('/create-batch-events', async (req, res) => {
     // get events
-    const events = Array.from({ length: 1 }, (_, i) => ({
+    const events = Array.from({ length: 1000000 }, (_, i) => ({
         summary: `Event #${i + 1}`,
         location: "Online (Zoom)",
         description: "Discussing project updates and timelines.",
@@ -102,7 +102,6 @@ router.get('/create-batch-events', async (req, res) => {
     const getEventChunk = () => {
         const start = eventPage * eventChunkSize;
         const end = start + eventChunkSize;
-        eventPage++;
         return events.slice(start, end);
     };
 
@@ -115,21 +114,31 @@ router.get('/create-batch-events', async (req, res) => {
             .limit(chunkSize); // Fetch a chunk of users
 
         if (users.length === 0) {
-            break; // Exit the loop when no more users are found
+            break;
         }
 
-        const events = getEventChunk();
+        for (const user of users) {
+            do {
+                const events = getEventChunk();
 
-        users.forEach(async user=>{
-            await calenderQueue.add('sendCalendarBatchEvent', {
-                events,
-                user
-            }, {
-                delay: page * 60000
-            });
-        })
+                if (events.length === 0) {
+                    eventPage=0
+                    break;
+                }
+
+
+                await calenderQueue.add('sendCalendarBatchEvent', {
+                    events,
+                    user
+                });
+
+                eventPage++;
+
+            } while (true);
+        }
 
         page++;
+
     }
 
     return res.send('success');
@@ -140,4 +149,17 @@ router.get('/add-queue', async (req, res) => {
     return res.send(`success ${job.id}`);
 });
 
+
+router.get('/test',(req,res)=>{
+    const events = Array.from({ length: 10000 }, (_, i) => ({
+        summary: `Event #${i + 1}`,
+        location: "Online (Zoom)",
+        description: "Discussing project updates and timelines.",
+        startDateTime: "2024-11-10T10:00:00-05:00", // ISO 8601 format with timezone
+        endDateTime: "2024-11-10T11:00:00-05:00", // ISO 8601 format with timezone
+        timeZone: "America/New_York",
+    }));
+
+    return res.send(events);
+})
 module.exports = router;
