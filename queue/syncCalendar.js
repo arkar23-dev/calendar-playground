@@ -24,6 +24,7 @@ const process = (queueName) => {
 }
 
 const calenderQueue = new Queue('calenderEvents');
+
 const scheduleJob =async ()=>{
 
 // Upserting a job with a cron expression
@@ -38,15 +39,6 @@ await calenderQueue.upsertJobScheduler(
       opts: {}, // Optional additional job options
     },
   );
-
-  const worker = new Worker(
-    'schedular-job',
-    async job => {
-      console.log(`Processing job ${job.id} with data: ${job.data.jobData}`);
-    },
-    { connection : redisOptions},
-  );
-
 }
 
 module.exports = { process, calenderQueue,scheduleJob }

@@ -32,7 +32,7 @@ const setupQueue =async () => {
         channel.process(channel.name)
     });
 
-    await scheduleJob();
+    // await scheduleJob();
 
 }
 
