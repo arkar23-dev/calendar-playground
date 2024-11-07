@@ -12,21 +12,17 @@ const redisOptions = {
     tls: false,
 };
 
-
-
 const process = (queueName) => {
     return new Worker(
         queueName,
         async (job) => {
-
             try {
-                const { event, users } = job.data;
+                const { events, user } = job.data;
                 const calendar = google.calendar({ version: 'v3' });
 
-                // Loop over the chunk of users and add their events to the batch
-                users.forEach(user => {
+                // Loop over the chunk of events
+                events.forEach(event => {
                     job.log(`Processing event: ${event.summary}`);
-
                     job.log(`Processing user: ${user.email}`);
 
                     try {
@@ -35,9 +31,10 @@ const process = (queueName) => {
                             refresh_token: user.refreshToken,
                         });
 
-                        calendar.events.insert({
+
+                         calendar.events.insert({
                             auth: oAuth2Client,
-                            calendarId: user.email,
+                            calendarId: 'primary',
                             requestBody: {
                                 summary: event.summary,
                                 location: event.location,
@@ -54,7 +51,7 @@ const process = (queueName) => {
                         });
                         job.log(`Event successfully added for user: ${user.email}`);
                     } catch (error) {
-                        job.log(`Error Adding Event: ${user.email}`);
+                        job.log(`Error Adding Event: ${event.summary}`);
                         throw  error;
                     }
                 });

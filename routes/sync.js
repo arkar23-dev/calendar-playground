@@ -86,21 +86,30 @@ router.get('/create-event', async (req, res) => {
 // create batch events
 router.get('/create-batch-events', async (req, res) => {
     // get events
-    const events = [{
-        summary: "Team Meeting",
+    const events = Array.from({ length: 1 }, (_, i) => ({
+        summary: `Event #${i + 1}`,
         location: "Online (Zoom)",
         description: "Discussing project updates and timelines.",
         startDateTime: "2024-11-10T10:00:00-05:00", // ISO 8601 format with timezone
         endDateTime: "2024-11-10T11:00:00-05:00", // ISO 8601 format with timezone
         timeZone: "America/New_York",
-    }];
+    }));
 
-    const chunkSize = 1;
+    const eventChunkSize = 50; // Size of chunk for events
+    let eventPage = 0;
 
+    // Function to chunk events
+    const getEventChunk = () => {
+        const start = eventPage * eventChunkSize;
+        const end = start + eventChunkSize;
+        eventPage++;
+        return events.slice(start, end);
+    };
+
+    const chunkSize = 1; // users
     let page = 0; // Start from the first chunk
 
     while (true) {
-
         const users = await googleCalendarToken.find({})
             .skip(page * chunkSize) // Skip the already processed users
             .limit(chunkSize); // Fetch a chunk of users
@@ -109,13 +118,16 @@ router.get('/create-batch-events', async (req, res) => {
             break; // Exit the loop when no more users are found
         }
 
-        console.log(users)
+        const events = getEventChunk();
 
-        // Add the chunk of users to the BullMQ queue for processing
-        await calenderQueue.add('sendCalendarBatchEvent', {
-            event: events[0], // Assuming we're adding one event
-            users,
-        });
+        users.forEach(async user=>{
+            await calenderQueue.add('sendCalendarBatchEvent', {
+                events,
+                user
+            }, {
+                delay: page * 60000
+            });
+        })
 
         page++;
     }
