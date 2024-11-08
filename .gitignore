@@ -34,4 +34,3 @@ coverage/
 # Files created by system
 *.sublime-workspace
 *.sublime-project
-.env.example
